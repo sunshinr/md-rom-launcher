@@ -64,7 +64,7 @@ npm start
 npm run dist:win       # Windows x64 NSIS
 npm run dist:mac       # macOS x64 dmg + zip
 npm run cap:sync       # 同步 Web 资源到 Android 工程
-npm run build:android  # Android debug APK（需 Android SDK / JDK 17）
+npm run build:android  # Android debug APK（需 Android SDK / JDK 21）
 ```
 
 注意：当前开发环境全局设置了 `ELECTRON_RUN_AS_NODE=1`，直接 `npm start` 会以 Node 模式运行导致 `app` 为 `undefined`。启动前需清除：
