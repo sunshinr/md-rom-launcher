@@ -1,0 +1,37 @@
+{
+  "name": "md-rom-launcher",
+  "version": "1.0.0",
+  "private": true,
+  "description": "内部使用的 Mega Drive / Genesis ROM 启动器（Windows + macOS Intel）",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win --x64",
+    "dist:win": "electron-builder --win --x64",
+    "dist:mac": "electron-builder --mac --x64"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@emulatorjs/core-genesis_plus_gx": "^4.2.3",
+    "@emulatorjs/emulatorjs": "^4.2.3",
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.internal.mdromlauncher",
+    "productName": "MD ROM 启动器",
+    "win": {
+      "target": "nsis"
+    },
+    "mac": {
+      "target": "zip",
+      "identity": null,
+      "category": "public.app-category.games"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    }
+  }
+}
