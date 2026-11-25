@@ -9,7 +9,7 @@
     * { box-sizing: border-box; }
     html, body { height: 100%; margin: 0; }
     body { background: var(--bg); color: var(--text); font-family: "Microsoft YaHei", system-ui, sans-serif; overflow: hidden; }
-    .shell { height: 100%; display: flex; flex-direction: column; }
+    .shell { height: 100dvh; display: flex; flex-direction: column; }
     header {
       flex: 0 0 auto;
       display: flex;
@@ -47,6 +47,26 @@
       .hint { white-space: normal; font-size: 10px; }
       .rom-name { max-width: 60vw; }
       .game-wrap { padding: 4px; }
+    }
+    @media (orientation: landscape) and (max-height: 540px) {
+      header {
+        position: fixed;
+        top: 4px;
+        right: 4px;
+        z-index: 30;
+        padding: 0;
+        background: transparent;
+        border: 0;
+      }
+      .title, .hint { display: none; }
+      .actions { gap: 0; }
+      .btn {
+        padding: 5px 9px;
+        font-size: 11px;
+        background: rgba(20, 27, 48, .8);
+      }
+      .game-wrap { padding: 0; }
+      #game { width: 100vw; height: 100dvh; }
     }
   </style>
   <script>

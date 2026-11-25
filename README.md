@@ -32,7 +32,7 @@
 
 - Windows：`MD.ROM.Setup.1.0.0.exe`（NSIS 安装包）
 - macOS：`MD.ROM.-1.0.0.dmg`（Intel x64，未签名）
-- Android：`app-debug.apk`（debug APK，Android 7.0+，需开启「允许安装未知来源」）
+- Android：`app-debug.apk`（debug APK，Android 7.0+，强制横屏，需开启「允许安装未知来源」）
 
 macOS 首次打开：右键 DMG 中的 App → 打开；若被 Gatekeeper 拦截，前往「系统设置 → 隐私与安全性」手动允许。
 
@@ -97,7 +97,7 @@ Android 端 ROM 切换通过文件选择器读取，二进制暂存到 IndexedDB
 
 - `windows-latest` 构建 Windows exe
 - `macos-latest` 构建 macOS dmg + zip
-- `ubuntu-latest` 构建 Android debug APK（JDK 17 + Android SDK）
+- `ubuntu-latest` 构建 Android debug APK（JDK 21 + Android SDK）
 - `release` 任务创建 / 更新 `v0.1.0` Release 并上传 exe、dmg、apk
 
 触发方式：
