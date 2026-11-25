@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+  <title>MD ROM 启动器</title>
+  <style>
+    :root { --bg:#0b1020; --panel:#141b30; --line:#2a3658; --text:#e8edf7; --muted:#93a1c0; --gold:#f4c96b; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body { background: var(--bg); color: var(--text); font-family: "Microsoft YaHei", system-ui, sans-serif; overflow: hidden; }
+    .shell { height: 100%; display: flex; flex-direction: column; }
+    header {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 14px;
+      background: linear-gradient(135deg, var(--panel), #1a2340);
+      border-bottom: 1px solid var(--line);
+    }
+    .title { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .mark { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 8px; background: var(--gold); color: #201503; font-weight: 800; font-size: 13px; }
+    h1 { margin: 0; font-size: 15px; letter-spacing: .5px; white-space: nowrap; }
+    .rom-name { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; color: var(--gold); }
+    .actions { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .btn {
+      touch-action: manipulation;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      color: var(--text);
+      background: #263357;
+      cursor: pointer;
+    }
+    .btn:hover { background: #30406b; }
+    .hint { font-size: 11px; color: var(--muted); white-space: nowrap; }
+    .game-wrap { flex: 1 1 auto; min-height: 0; padding: 10px; }
+    .game-wrap.dragover { outline: 2px dashed var(--gold); outline-offset: -8px; }
+    #game { width: 100%; height: 100%; }
+    #game > div { outline: none; }
+    @media (max-width: 640px) {
+      header { align-items: flex-start; flex-direction: column; gap: 8px; }
+      .actions { width: 100%; justify-content: space-between; }
+      .hint { white-space: normal; font-size: 10px; }
+      .rom-name { max-width: 60vw; }
+      .game-wrap { padding: 4px; }
+    }
+  </style>
+  <script>
+    (function () {
+      var DB_NAME = 'md-rom-launcher';
+      var STORE = 'roms';
+      var KEY = 'last';
+      var DEFAULT_URL = './games/game.bin';
+      var DEFAULT_NAME = '梦幻模拟战2 帝国之路·暗灭';
+
+      function applyConfig(url, name) {
+        var displayName = name || 'MD ROM';
+        window.EJS_DEBUG_XX = true;
+        window.EJS_player = '#game';
+        window.EJS_core = 'segaMD';
+        window.EJS_gameName = displayName;
+        window.EJS_gameUrl = url;
+        window.EJS_pathtodata = './vendor/ejs/';
+        window.EJS_language = 'zh-CN';
+        window.EJS_disableAutoLang = false;
+        window.EJS_startOnLoaded = true;
+        window.EJS_volume = 0.6;
+        window.EJS_threads = false;
+        window.EJS_gameID = 'md-rom-' + String(displayName).replace(/[^\w\u4e00-\u9fa5]/g, '').slice(0, 40);
+        document.dispatchEvent(new CustomEvent('rom-ready'));
+
+        var loader = document.createElement('script');
+        loader.src = './vendor/ejs/loader.js';
+        document.head.appendChild(loader);
+      }
+
+      function openDb() {
+        return new Promise(function (resolve, reject) {
+          var req = indexedDB.open(DB_NAME, 1);
+          req.onupgradeneeded = function () {
+            var db = req.result;
+            if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE);
+          };
+          req.onsuccess = function () { resolve(req.result); };
+          req.onerror = function () { reject(req.error); };
+        });
+      }
+
+      function saveRom(blob, name) {
+        return openDb().then(function (db) {
+          return new Promise(function (resolve, reject) {
+            var tx = db.transaction(STORE, 'readwrite');
+            tx.objectStore(STORE).put({ blob: blob, name: name || '外部 ROM' }, KEY);
+            tx.oncomplete = function () { resolve(); };
+            tx.onerror = function () { reject(tx.error); };
+          });
+        });
+      }
+
+      function readRom() {
+        return openDb().then(function (db) {
+          return new Promise(function (resolve, reject) {
+            var req = db.transaction(STORE, 'readonly').objectStore(STORE).get(KEY);
+            req.onsuccess = function () { resolve(req.result || null); };
+            req.onerror = function () { reject(req.error); };
+          });
+        });
+      }
+
+      window.mdRom = {
+        launchWithUrl: function (url, name) {
+          if (!url) return;
+          var base = location.href.split('?')[0];
+          location.href = base + '?rom=' + encodeURIComponent(url) + (name ? '&name=' + encodeURIComponent(name) : '');
+        },
+        launchWithFile: function (file) {
+          if (!file) return;
+          if (window.romPicker && window.romPicker.pathForFile) {
+            var filePath = window.romPicker.pathForFile(file);
+            if (filePath) {
+              window.mdRom.launchWithUrl(window.romPicker.toFileUrl(filePath), file.name);
+              return;
+            }
+          }
+          saveRom(file, file.name).then(function () {
+            window.mdRom.launchWithUrl('idb:' + KEY, file.name);
+          }).catch(function () {
+            window.mdRom.launchWithUrl('idb:' + KEY, file.name);
+          });
+        },
+        boot: function () {
+          var params = new URLSearchParams(location.search);
+          var rom = params.get('rom');
+          var name = params.get('name');
+
+          if (!rom) return applyConfig(DEFAULT_URL, DEFAULT_NAME);
+          if (rom.indexOf('idb:') !== 0) {
+            return applyConfig(rom, name || decodeURIComponent(rom.split('/').pop() || rom));
+          }
+
+          readRom().then(function (record) {
+            if (!record) return applyConfig(DEFAULT_URL, DEFAULT_NAME);
+            applyConfig(URL.createObjectURL(record.blob), record.name || name || '外部 ROM');
+          }).catch(function () {
+            applyConfig(DEFAULT_URL, DEFAULT_NAME);
+          });
+        }
+      };
+
+      window.mdRom.boot();
+    })();
+  </script>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="title">
+        <span class="mark">MD</span>
+        <h1>ROM 启动器</h1>
+        <span id="romName" class="rom-name"></span>
+      </div>
+      <div class="actions">
+        <span class="hint">键盘：方向键 / S=A / X=B / Z=C / Enter=Start · 触屏用虚拟手柄 · 可拖入 ROM</span>
+        <button id="changeRomBtn" class="btn">换 ROM</button>
+      </div>
+    </header>
+    <div id="gameWrap" class="game-wrap">
+      <div id="game"></div>
+    </div>
+  </div>
+
+  <input id="romFileInput" type="file" accept=".bin,.gen,.md,.rom,.zip,.7z,.rar" hidden />
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var nameEl = document.getElementById('romName');
+      var btn = document.getElementById('changeRomBtn');
+      var fileInput = document.getElementById('romFileInput');
+      var wrap = document.getElementById('gameWrap');
+
+      function updateName() {
+        if (nameEl) nameEl.textContent = window.EJS_gameName || '';
+      }
+      document.addEventListener('rom-ready', updateName);
+      updateName();
+
+      btn.addEventListener('click', function () {
+        if (window.romPicker && window.romPicker.select) {
+          window.romPicker.select().then(function (url) {
+            if (url) window.mdRom.launchWithUrl(url);
+          });
+        } else {
+          fileInput.click();
+        }
+      });
+
+      fileInput.addEventListener('change', function () {
+        window.mdRom.launchWithFile(fileInput.files && fileInput.files[0]);
+      });
+
+      wrap.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        wrap.classList.add('dragover');
+      });
+      wrap.addEventListener('dragleave', function () {
+        wrap.classList.remove('dragover');
+      });
+      wrap.addEventListener('drop', function (e) {
+        e.preventDefault();
+        wrap.classList.remove('dragover');
+        var file = e.dataTransfer.files && e.dataTransfer.files[0];
+        window.mdRom.launchWithFile(file);
+      });
+    });
+  </script>
+</body>
+</html>

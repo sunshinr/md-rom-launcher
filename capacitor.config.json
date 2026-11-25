@@ -1,0 +1,9 @@
+{
+  "appId": "com.internal.mdromlauncher",
+  "appName": "MD ROM Launcher",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}

@@ -37,11 +37,11 @@ function createWindow() {
 
   const romArg = process.argv.find(function (arg) { return arg.indexOf('--rom=') === 0; });
   if (romArg) {
-    mainWindow.loadFile(path.join(__dirname, 'index.html'), {
+    mainWindow.loadFile(path.join(__dirname, 'www', 'index.html'), {
       query: { rom: romArg.slice(6) }
     });
   } else {
-    mainWindow.loadFile(path.join(__dirname, 'index.html'));
+    mainWindow.loadFile(path.join(__dirname, 'www', 'index.html'));
   }
 
   mainWindow.on('closed', () => {
