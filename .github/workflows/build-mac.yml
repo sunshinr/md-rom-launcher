@@ -1,4 +1,4 @@
-name: Build macOS Intel (x64)
+name: Build and Release
 
 on:
   workflow_dispatch:
@@ -6,25 +6,84 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
-  build:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Windows x64 installer
+        run: npm run dist:win
+
+      - name: Upload Windows artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: md-rom-launcher-win-x64
+          path: dist/*.exe
+          if-no-files-found: error
+
+  build-mac:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install dependencies
         run: npm install
 
-      - name: Build macOS x64 zip
+      - name: Build macOS x64 dmg and zip
         run: npm run dist:mac
 
-      - name: Upload artifact
+      - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
         with:
           name: md-rom-launcher-mac-x64
-          path: dist/*.zip
+          path: |
+            dist/*.dmg
+            dist/*.zip
           if-no-files-found: error
+
+  release:
+    needs: [build-windows, build-mac]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: md-rom-launcher-win-x64
+          path: release-assets/win
+
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: md-rom-launcher-mac-x64
+          path: release-assets/mac
+
+      - name: Create or update GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v0.1.0
+          name: v0.1.0
+          body: |
+            MD ROM Launcher — Windows x64 + macOS Intel x64
+
+            - Windows: NSIS installer (.exe)
+            - macOS: unsigned DMG (.dmg), right-click to open on first launch
+            - Built-in ROM: 梦幻模拟战2 帝国之路·暗灭
+          files: |
+            release-assets/win/*.exe
+            release-assets/mac/*.dmg
+          fail_on_unmatched_files: true

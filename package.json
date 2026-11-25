@@ -6,8 +6,8 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "dist": "electron-builder --win --x64",
-    "dist:win": "electron-builder --win --x64",
+    "dist": "electron-builder --win --x64 --publish never",
+    "dist:win": "electron-builder --win --x64 --publish never",
     "dist:mac": "electron-builder --mac --x64 --publish never"
   },
   "dependencies": {},
@@ -24,7 +24,7 @@
       "target": "nsis"
     },
     "mac": {
-      "target": "zip",
+      "target": ["dmg", "zip"],
       "identity": null,
       "category": "public.app-category.games"
     },
