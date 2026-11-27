@@ -1,6 +1,6 @@
 {
   "name": "md-rom-launcher",
-  "version": "1.0.0",
+  "version": "0.2.0",
   "private": true,
   "description": "内部使用的 Mega Drive / Genesis ROM 启动器（Windows + macOS Intel + Android）",
   "main": "main.js",
@@ -41,5 +41,8 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true
     }
+  },
+  "dependencies": {
+    "starorbit-tactics": "file:c:/Users/Administrator/WorkBuddy/2026-11-25-11-05-23"
   }
 }

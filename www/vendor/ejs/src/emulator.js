@@ -3439,12 +3439,10 @@ class EmulatorJS {
         this.elements.parent.appendChild(this.virtualGamepad);
 
         const speedControlButtons = [
-            { "type": "button", "text": "Fast", "id": "speed_fast", "location": "center", "left": -35, "top": 50, "fontSize": 15, "block": true, "input_value": 27 },
-            { "type": "button", "text": "Slow", "id": "speed_slow", "location": "center", "left": 95, "top": 50, "fontSize": 15, "block": true, "input_value": 29 },
+            { "type": "button", "text": "1x", "id": "speed_1x", "location": "center", "left": -64, "top": 50, "fontSize": 12, "block": true, "input_value": 30 },
+            { "type": "button", "text": "2x", "id": "speed_2x", "location": "center", "left": 0, "top": 50, "fontSize": 12, "block": true, "input_value": 31 },
+            { "type": "button", "text": "3x", "id": "speed_3x", "location": "center", "left": 64, "top": 50, "fontSize": 12, "block": true, "input_value": 32 },
         ];
-        if (this.rewindEnabled) {
-            speedControlButtons.push({ "type": "button", "text": "Rewind", "id": "speed_rewind", "location": "center", "left": 30, "top": 50, "fontSize": 15, "block": true, "input_value": 28 });
-        }
 
         let info;
         if (this.config.VirtualGamepadSettings && function (set) {

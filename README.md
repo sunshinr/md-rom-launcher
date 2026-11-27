@@ -30,8 +30,8 @@
 
 前往 [Releases](https://github.com/sunshinr/md-rom-launcher/releases) 下载：
 
-- Windows：`MD.ROM.Setup.1.0.0.exe`（NSIS 安装包）
-- macOS：`MD.ROM.-1.0.0.dmg`（Intel x64，未签名）
+- Windows：`MD.ROM.Setup.0.2.0.exe`（NSIS 安装包）
+- macOS：`MD.ROM.-0.2.0.dmg`（Intel x64，未签名）
 - Android：`app-debug.apk`（debug APK，Android 7.0+，强制横屏，需开启「允许安装未知来源」）
 
 macOS 首次打开：右键 DMG 中的 App → 打开；若被 Gatekeeper 拦截，前往「系统设置 → 隐私与安全性」手动允许。
@@ -47,7 +47,9 @@ macOS 首次打开：右键 DMG 中的 App → 打开；若被 Gatekeeper 拦截
 | Start | `Enter` |
 | Mode / Select | `V` |
 
-Android 端使用 EmulatorJS 自带虚拟手柄。模拟器菜单内可重新映射按键。ROM 自带的秘籍 / 隐藏商店保存在 ROM 逻辑中，原样运行可保留。
+三端常驻倍速按钮：`1x` / `2x` / `3x`，选择后写入 localStorage，下次启动自动恢复。已移除 Fast / Slow / Rewind。
+
+Android 端使用 EmulatorJS 虚拟手柄：Mode 在左下，Start 在右下，右侧六键缩小并压缩间距；「换 ROM」浮层在左上，模拟器设置在右上，避免遮挡。模拟器菜单内可重新映射按键。ROM 自带的秘籍 / 隐藏商店保存在 ROM 逻辑中，原样运行可保留。
 
 ## 本地开发
 
@@ -98,7 +100,7 @@ Android 端 ROM 切换通过文件选择器读取，二进制暂存到 IndexedDB
 - `windows-latest` 构建 Windows exe
 - `macos-latest` 构建 macOS dmg + zip
 - `ubuntu-latest` 构建 Android debug APK（JDK 21 + Android SDK）
-- `release` 任务创建 / 更新 `v0.1.0` Release 并上传 exe、dmg、apk
+- `release` 任务创建 / 更新 `v0.2.0` Release 并上传 exe、dmg、apk
 
 触发方式：
 

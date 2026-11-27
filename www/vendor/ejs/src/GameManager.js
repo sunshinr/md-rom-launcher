@@ -250,7 +250,7 @@ class EJS_GameManager {
             this.EJS.netplay.simulateInput(player, index, value);
             return;
         }
-        if ([24, 25, 26, 27, 28, 29].includes(index)) {
+        if ([24, 25, 26, 27, 28, 29, 30, 31, 32].includes(index)) {
             if (index === 24 && value === 1) {
                 const slot = this.EJS.settings["save-state-slot"] ? this.EJS.settings["save-state-slot"] : "1";
                 if (this.quickSave(slot)) {
@@ -284,6 +284,15 @@ class EJS_GameManager {
             if (index === 28) {
                 if (this.EJS.rewindEnabled) {
                     this.functions.toggleRewind(value);
+                }
+            }
+            if ([30, 31, 32].includes(index) && value === 1) {
+                const ratio = index - 29;
+                if (ratio === 1) {
+                    this.EJS.changeSettingOption("fastForward", "disabled");
+                } else {
+                    this.EJS.changeSettingOption("ff-ratio", ratio.toString());
+                    this.EJS.changeSettingOption("fastForward", "enabled");
                 }
             }
             return;

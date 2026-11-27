@@ -114,8 +114,8 @@ jobs:
       - name: Create or update GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.1.0
-          name: v0.1.0
+          tag_name: v0.2.0
+          name: v0.2.0
           body: |
             MD ROM Launcher — Windows x64 + macOS Intel x64 + Android
 
