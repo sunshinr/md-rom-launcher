@@ -47,13 +47,13 @@ macOS 首次打开：右键 DMG 中的 App → 打开；若被 Gatekeeper 拦截
 | Start | `Enter` |
 | Mode / Select | `V` |
 
-三端常驻倍速按钮：`1x` / `2x` / `3x`，选择后写入 localStorage，下次启动自动恢复。已移除 Fast / Slow / Rewind。
+三端常驻倍速按钮：`1x` / `2x` / `3x`，与 Mode 同一排、固定左下角，选择后写入 localStorage，下次启动自动恢复。已移除 Fast / Slow / Rewind。
 
-Android 端使用 EmulatorJS 虚拟手柄：Mode 在左下，Start 在右下，右侧六键缩小并压缩间距；「换 ROM」浮层在左上，模拟器设置在右上，避免遮挡。模拟器菜单内可重新映射按键。ROM 自带的秘籍 / 隐藏商店保存在 ROM 逻辑中，原样运行可保留。
+Android 端使用 EmulatorJS 虚拟手柄：Mode 与 `1x` / `2x` / `3x` 同一排落在左下角，Start 在右下，右侧六键缩小并压缩间距；「换 ROM」浮层在左上（横屏）/ 右上（竖屏），模拟器「设置」在底部菜单条内。启动即隐藏状态栏与导航栏（沉浸全屏），并按 `env(safe-area-inset-*)` 避让刘海与系统栏，因此顶部与底部按钮不会再被系统栏挡住点击。模拟器菜单内可重新映射按键。ROM 自带的秘籍 / 隐藏商店保存在 ROM 逻辑中，原样运行可保留。
 
 ## 本地开发
 
-环境：Node.js 20+，npm。
+环境：Node.js 22+（Capacitor 8 的 CLI 要求，低于 22 时 `cap sync` 会直接退出），npm。
 
 ```bash
 npm install
